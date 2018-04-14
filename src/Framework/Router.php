@@ -69,6 +69,5 @@ class Router
         } catch (RouteNotFound $e) {
             return null;
         }
-
     }
 }

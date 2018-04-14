@@ -41,7 +41,10 @@ class RouterTest extends TestCase
     {
         $request = new ServerRequest('GET', '/blog/mon-slug-8');
         $this->router->get('/blog', 'posts', function () {return 'pashello';});
-        $this->router->get('/blog/{slug}-{id}', 'post.show', function () {return 'hello';});
+        $this->router->get('/blog/{slug}-{id}', 'post.show', function () {return 'hello';}, [
+            'slug' => '[a-z\-]+',
+            'id'   => '[0-9]+'
+        ]);
         $route = $this->router->match($request);
 
         $this->assertEquals('post.show', $route->getName());
