@@ -42,6 +42,39 @@ class Router
     }
 
     /**
+     * @param string   $uri
+     * @param string   $name
+     * @param callable $callable
+     * @param array    $token
+     */
+    public function post(string $uri, string $name, callable $callable, array $token = [])
+    {
+        $this->map->post($name, $uri, $callable)->tokens($token);
+    }
+
+    /**
+     * @param string   $uri
+     * @param string   $name
+     * @param callable $callable
+     * @param array    $token
+     */
+    public function put(string $uri, string $name, callable $callable, array $token = [])
+    {
+        $this->map->put($name, $uri, $callable)->tokens($token);
+    }
+
+    /**
+     * @param string   $uri
+     * @param string   $name
+     * @param callable $callable
+     * @param array    $token
+     */
+    public function delete(string $uri, string $name, callable $callable, array $token = [])
+    {
+        $this->map->delete($name, $uri, $callable)->tokens($token);
+    }
+
+    /**
      * @param ServerRequestInterface $request
      * @return Route|null
      */
