@@ -8,28 +8,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class App
 {
-    /**
-     * @var array
-     */
-    private $modules;
-
-    /**
-     * @var Router
-     */
-    private $router;
-
-    /**
-     * App constructor.
-     * @param string[] $modules Modules list to load
-     */
-    public function __construct(array $modules = [])
-    {
-        $this->router = new Router();
-        foreach ($modules as $module) {
-            $this->modules[] = new $module($this->router);
-        }
-    }
-
     public function run(ServerRequestInterface $request): ResponseInterface
     {
         $uri = $request->getUri()->getPath();
