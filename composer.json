@@ -16,8 +16,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Framework\\": "Framework",
-            "App\\": "src"
+            "Framework\\": "framework/",
+            "App\\": "src/",
+            "Test\\": "test/"
         },
         "files": [
             "framework/Helpers/send_response.php"
