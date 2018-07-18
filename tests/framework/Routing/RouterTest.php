@@ -15,9 +15,9 @@ class RouterTest extends TestCase
     {
         $this->router = Router::getInstance();
 
-        Route::get('/', 'index', function () {return 'hello from index';});
-        Route::get('/contact', 'contact', function () {return 'contact';});
-        Route::get('/profile/{id}', 'profile', function ($id) {return 'profile ' . $id;});
+        Route::get('/', 'index', function () {return 'hello from index'; });
+        Route::get('/contact', 'contact', function () {return 'contact'; });
+        Route::get('/profile/{id}', 'profile', function ($id) {return 'profile '.$id; });
     }
 
     public function testRegisterRoute()

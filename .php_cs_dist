@@ -2,7 +2,8 @@
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
     ->exclude('config')
-    ->exclude('public')
+    ->exclude('public');
+
 return PhpCsFixer\Config::create()
     ->setRules([
         '@Symfony' => true,

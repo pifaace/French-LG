@@ -16,7 +16,7 @@ class App
         $router = Router::getInstance();
         $route = $router->match($request);
 
-        if ($route === null) {
+        if (null === $route) {
             return new Response(404, [], '404 not found');
         }
 

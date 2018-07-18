@@ -5,7 +5,7 @@ namespace Framework\Helpers;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Convert Response object to a browser response
+ * Convert Response object to a browser response.
  *
  * @param ResponseInterface $response
  */
@@ -20,7 +20,7 @@ function send(ResponseInterface $response)
 
     foreach ($response->getHeaders() as $key => $header) {
         foreach ($header as $value) {
-            header($key . ':' . $value);
+            header($key.':'.$value);
         }
     }
 

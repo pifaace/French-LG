@@ -3,7 +3,7 @@
 namespace Framework\Routing;
 
 /**
- * Represent a register route
+ * Represent a register route.
  */
 class Route
 {

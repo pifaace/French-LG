@@ -11,6 +11,11 @@ class RouterContainer
      */
     private $routes = [];
 
+    /**
+     * @param $uri
+     * @param $name
+     * @param $callable
+     */
     public function addRoute($uri, $name, $callable): void
     {
         $this->routes[$name] = new Route($uri, $name, $callable);
@@ -21,6 +26,14 @@ class RouterContainer
         return $this->routes;
     }
 
+    /**
+     * Check if the current object route is matching the request route.
+     *
+     * @param ServerRequestInterface $request
+     * @param Route                  $route
+     *
+     * @return bool
+     */
     public function match(ServerRequestInterface $request, Route $route): bool
     {
         $uri = $request->getUri()->getPath();
