@@ -14,9 +14,13 @@ class App
     public function run(ServerRequestInterface $request): ResponseInterface
     {
         $router = Router::getInstance();
-        $router->match($request);
+        $response = $router->match($request);
 
-        return new Response(200, [], 'test');
+        if ($response === null) {
+            return new Response(404, [], '404 not found');
+        }
+
+        return new Response(200, [], $response);
     }
 
     public static function getInstance()

@@ -7,13 +7,15 @@ use Psr\Http\Message\ServerRequestInterface;
 class RouterContainer
 {
     /**
-     * @var array
+     * @var Route[]
      */
     private $routes = [];
 
-    public function addRoute($uri, $name, $callable)
+    private $match;
+
+    public function addRoute($uri, $name, $callable): void
     {
-        $this->routes[$uri] = ['name' => $name, 'callable' => $callable];
+        $this->routes[$name] = new Route($uri, $name, $callable);
     }
 
     public function getRoutes(): array
@@ -21,14 +23,24 @@ class RouterContainer
         return $this->routes;
     }
 
-    public function match(ServerRequestInterface $request): ?Route
+    public function match(ServerRequestInterface $request, Route $route): bool
     {
         $uri = $request->getUri()->getPath();
 
-        if (array_key_exists($uri, $this->routes)) {
-            
+        $path = preg_replace("#{([\w]+)}#", '([^/]+)', $route->getUri());
+
+        if (!preg_match("#^$path$#i", $uri, $matches)) {
+            return false;
         }
 
+        array_shift($matches);
+        $this->match = $matches;
 
+        return true;
+    }
+
+    public function call(Route $route)
+    {
+        return \call_user_func_array($route->getCallable(), $this->match);
     }
 }

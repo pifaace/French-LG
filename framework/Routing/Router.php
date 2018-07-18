@@ -6,6 +6,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Router
 {
+    /**
+     * @var Router
+     */
     private static $_instance;
 
     /**
@@ -31,10 +34,16 @@ class Router
 
     public function match(ServerRequestInterface $request)
     {
-        $result = $this->routes->match($request);
+        foreach ($this->routes->getRoutes() as $route) {
+            if ($this->routes->match($request, $route)) {
+                return $this->routes->call($route);
+            }
+        }
+
+        return null;
     }
 
-    public static function getInstance()
+    public static function getInstance(): Router
     {
         if (null === self::$_instance) {
             self::$_instance = new Router();

@@ -11,10 +11,21 @@ class Route
 
     private $callable;
 
-    public function __construct($name, $callable)
+    private $uri;
+
+    public function __construct($uri, $name, $callable)
     {
         $this->name = $name;
         $this->callable = $callable;
+        $this->uri = $uri;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri(): string
+    {
+        return $this->uri;
     }
 
     /**
