@@ -13,6 +13,8 @@ class Route
 
     private $uri;
 
+    private $parameters = [];
+
     public function __construct($uri, $name, $callable)
     {
         $this->name = $name;
@@ -42,5 +44,21 @@ class Route
     public function getCallable(): callable
     {
         return $this->callable;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameters(): array
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * @param array $parameters
+     */
+    public function setParameters(array $parameters): void
+    {
+        $this->parameters = array_merge($this->parameters, $parameters);
     }
 }

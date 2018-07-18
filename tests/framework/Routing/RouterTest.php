@@ -28,17 +28,19 @@ class RouterTest extends TestCase
     public function testGetMethodWithNoParameter()
     {
         $request = new ServerRequest('GET', '/');
-        $response = $this->router->match($request);
+        $route = $this->router->match($request);
 
-        $this->assertEquals('hello from index', $response);
+        $this->assertEquals('index', $route->getName());
+        $this->assertEquals('hello from index', \call_user_func_array($route->getCallable(), []));
     }
 
     public function testGetWithParameters()
     {
         $request = new ServerRequest('GET', '/profile/3');
-        $response = $this->router->match($request);
+        $route = $this->router->match($request);
 
-        $this->assertEquals('profile 3', $response);
+        $this->assertEquals('profile', $route->getName());
+        $this->assertEquals('profile 3', \call_user_func_array($route->getCallable(), $route->getParameters()));
     }
 
     public function testInvalidRoute()

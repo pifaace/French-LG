@@ -11,8 +11,6 @@ class RouterContainer
      */
     private $routes = [];
 
-    private $match;
-
     public function addRoute($uri, $name, $callable): void
     {
         $this->routes[$name] = new Route($uri, $name, $callable);
@@ -34,13 +32,8 @@ class RouterContainer
         }
 
         array_shift($matches);
-        $this->match = $matches;
+        $route->setParameters($matches);
 
         return true;
-    }
-
-    public function call(Route $route)
-    {
-        return \call_user_func_array($route->getCallable(), $this->match);
     }
 }

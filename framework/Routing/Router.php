@@ -32,11 +32,11 @@ class Router
         return $this->routes->getRoutes();
     }
 
-    public function match(ServerRequestInterface $request)
+    public function match(ServerRequestInterface $request): ?Route
     {
         foreach ($this->routes->getRoutes() as $route) {
             if ($this->routes->match($request, $route)) {
-                return $this->routes->call($route);
+                return $route;
             }
         }
 

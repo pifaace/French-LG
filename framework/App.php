@@ -14,11 +14,13 @@ class App
     public function run(ServerRequestInterface $request): ResponseInterface
     {
         $router = Router::getInstance();
-        $response = $router->match($request);
+        $route = $router->match($request);
 
-        if ($response === null) {
+        if ($route === null) {
             return new Response(404, [], '404 not found');
         }
+
+        $response = \call_user_func_array($route->getCallable(), $route->getParameters());
 
         return new Response(200, [], $response);
     }
