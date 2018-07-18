@@ -4,7 +4,6 @@ namespace Tests\framework\Routing;
 
 use Framework\Facades\Route;
 use Framework\Routing\Router;
-use Grpc\Server;
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 
@@ -18,21 +17,35 @@ class RouterTest extends TestCase
 
         Route::get('/', 'index', function () {return 'hello from index';});
         Route::get('/contact', 'contact', function () {return 'contact';});
-        Route::get('/profile', 'profile', function () {return 'profile';});
+        Route::get('/profile/{id}', 'profile', function ($id) {return 'profile ' . $id;});
     }
 
     public function testRegisterRoute()
     {
-        $router = Router::getInstance();
-        $this->assertCount(3, $router->getRoutes());
+        $this->assertCount(3, $this->router->getRoutes());
     }
 
     public function testGetMethodWithNoParameter()
     {
-        $request = new ServerRequest('GET', '/index');
-        $route = $this->router->match($request);
+        $request = new ServerRequest('GET', '/');
+        $response = $this->router->match($request);
 
-        $this->assertEquals('index', $route->getName());
-        $this->assertEquals('hello from index', call_user_func_array($route->getCallBack(), [$request]));
+        $this->assertEquals('hello from index', $response);
+    }
+
+    public function testGetWithParameters()
+    {
+        $request = new ServerRequest('GET', '/profile/3');
+        $response = $this->router->match($request);
+
+        $this->assertEquals('profile 3', $response);
+    }
+
+    public function testInvalidRoute()
+    {
+        $request = new ServerRequest('GET', '/ferfeffe');
+        $response = $this->router->match($request);
+
+        $this->assertEquals(null, $response);
     }
 }
