@@ -2,6 +2,7 @@
 
 namespace Framework\Routing;
 
+use Framework\Routing\Exceptions\DuplicateRouteException;
 use Psr\Http\Message\ServerRequestInterface;
 
 class RouterContainer
@@ -12,12 +13,26 @@ class RouterContainer
     private $routes = [];
 
     /**
+     * @var array
+     */
+    private $uri = [];
+
+    /**
      * @param $uri
      * @param $name
      * @param $callable
      */
     public function addRoute($uri, $name, $callable): void
     {
+        if (\in_array($uri, $this->uri, true)) {
+            throw DuplicateRouteException::duplicateUri($uri);
+        }
+
+        if (array_key_exists($name, $this->routes)) {
+            throw DuplicateRouteException::duplicateUriName($name);
+        }
+
+        $this->uri[] = $uri;
         $this->routes[$name] = new Route($uri, $name, $callable);
     }
 

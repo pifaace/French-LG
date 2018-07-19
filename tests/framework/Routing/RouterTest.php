@@ -2,7 +2,6 @@
 
 namespace Tests\framework\Routing;
 
-use Framework\Facades\Route;
 use Framework\Routing\Router;
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
@@ -13,29 +12,32 @@ class RouterTest extends TestCase
 
     public function setUp()
     {
-        $this->router = Router::getInstance();
-
-        Route::get('/', 'index', function () {return 'hello from index'; });
-        Route::get('/contact', 'contact', function () {return 'contact'; });
-        Route::get('/profile/{id}', 'profile', function ($id) {return 'profile '.$id; });
+        $this->router = new Router();
     }
 
     public function testRegisterRoute()
     {
-        $this->assertCount(3, $this->router->getRoutes());
+        $this->router->get('/foo', 'foo', function () {return 'hello from foo'; });
+        $this->router->get('/blo', 'blo', function () {return 'blo'; });
+
+        $this->assertCount(2, $this->router->getRoutes());
     }
 
     public function testGetMethodWithNoParameter()
     {
-        $request = new ServerRequest('GET', '/');
+        $this->router->get('/foo', 'foo', function () {return 'hello from foo'; });
+
+        $request = new ServerRequest('GET', '/foo');
         $route = $this->router->match($request);
 
-        $this->assertEquals('index', $route->getName());
-        $this->assertEquals('hello from index', \call_user_func_array($route->getCallable(), []));
+        $this->assertEquals('foo', $route->getName());
+        $this->assertEquals('hello from foo', \call_user_func_array($route->getCallable(), []));
     }
 
     public function testGetWithParameters()
     {
+        $this->router->get('/profile/{id}', 'profile', function ($id) {return 'profile '.$id; });
+
         $request = new ServerRequest('GET', '/profile/3');
         $route = $this->router->match($request);
 
@@ -49,5 +51,23 @@ class RouterTest extends TestCase
         $response = $this->router->match($request);
 
         $this->assertEquals(null, $response);
+    }
+
+    /**
+     * @expectedException \Framework\Routing\Exceptions\DuplicateRouteException
+     */
+    public function testDuplicateUri()
+    {
+        $this->router->get('/foo', 'foo', function () {return 'hello from foo'; });
+        $this->router->get('/foo', 'bar', function () {return 'bar'; });
+    }
+
+    /**
+     * @expectedException \Framework\Routing\Exceptions\DuplicateRouteException
+     */
+    public function testDuplicateRouteName()
+    {
+        $this->router->get('/foofoo', 'foo', function () {return 'hello from foo'; });
+        $this->router->get('/foo', 'foo', function () {return 'foo'; });
     }
 }
