@@ -75,27 +75,27 @@ class RouterTest extends TestCase
     {
         $this->router->get('/profile/{id}', 'profile', function ($id) {return 'profile '.$id; })->where(['id' => '[0-9]+']);
 
-        $requestValid = new ServerRequest('GET', '/profile/34');
-        $requestInvalid = new ServerRequest('GET', '/profile/foo');
+        $validRequest = new ServerRequest('GET', '/profile/34');
+        $invalidRequest = new ServerRequest('GET', '/profile/foo');
 
-        $routeValid = $this->router->match($requestValid);
-        $routeInvalid = $this->router->match($requestInvalid);
+        $validRoute = $this->router->match($validRequest);
+        $invalidRoute = $this->router->match($invalidRequest);
 
-        $this->assertEquals('profile 34', \call_user_func_array($routeValid->getCallable(), $routeValid->getParameters()));
-        $this->assertEquals(null, $routeInvalid);
+        $this->assertEquals('profile 34', \call_user_func_array($validRoute->getCallable(), $validRoute->getParameters()));
+        $this->assertEquals(null, $invalidRoute);
     }
 
     public function testGetWithParametersAndWheres()
     {
         $this->router->get('/profile/{id}/{foo}', 'profile', function ($id, $foo) {return 'profile '.$id . $foo; })->where(['id' => '[0-9]+', 'foo' => '[a-zA-Z]+']);
 
-        $requestValid = new ServerRequest('GET', '/profile/34/Az');
-        $requestInvalid = new ServerRequest('GET', '/profile/2f/4');
+        $validRequest = new ServerRequest('GET', '/profile/34/Az');
+        $invalidRequest = new ServerRequest('GET', '/profile/2f/4');
 
-        $routeValid = $this->router->match($requestValid);
-        $routeInvalid = $this->router->match($requestInvalid);
+        $validRoute = $this->router->match($validRequest);
+        $invalidRoute = $this->router->match($invalidRequest);
 
-        $this->assertEquals('profile 34Az', \call_user_func_array($routeValid->getCallable(), $routeValid->getParameters()));
-        $this->assertEquals(null, $routeInvalid);
+        $this->assertEquals('profile 34Az', \call_user_func_array($validRoute->getCallable(), $validRoute->getParameters()));
+        $this->assertEquals(null, $invalidRoute);
     }
 }
