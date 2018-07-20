@@ -7,13 +7,30 @@ namespace Framework\Routing;
  */
 class Route
 {
+    /**
+     * @var string
+     */
     private $name;
 
+    /**
+     * @var callable|string
+     */
     private $callable;
 
+    /**
+     * @var string
+     */
     private $uri;
 
+    /**
+     * @var array
+     */
     private $parameters = [];
+
+    /**
+     * @var array
+     */
+    private $wheres = [];
 
     public function __construct($uri, $name, $callable)
     {
@@ -60,5 +77,17 @@ class Route
     public function setParameters(array $parameters): void
     {
         $this->parameters = array_merge($this->parameters, $parameters);
+    }
+
+    public function where($expressions)
+    {
+        $this->wheres = array_merge($this->wheres, $expressions);
+
+        return $this;
+    }
+
+    public function getWhere()
+    {
+        return $this->wheres;
     }
 }

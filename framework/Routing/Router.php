@@ -28,13 +28,24 @@ class Router
      * @param $name
      * @param $callable
      *
-     * @return $this
+     * @return Route
      */
     public function get($uri, $name, $callable)
     {
-        $this->routes->addRoute($uri, $name, $callable);
+        return $this->routes->addRoute($this->createRoute($uri, $name, $callable));
+    }
 
-        return $this;
+    /**
+     * Create a new route
+     *
+     * @param $uri
+     * @param $name
+     * @param $callable
+     * @return Route
+     */
+    private function createRoute($uri, $name, $callable): Route
+    {
+        return new Route($uri, $name, $callable);
     }
 
     /**

@@ -18,27 +18,23 @@ class RouterContainer
     private $uri = [];
 
     /**
-     * @param $uri
-     * @param $name
-     * @param $callable
+     * @param Route $route
+     * @return Route
      */
-    public function addRoute($uri, $name, $callable): void
+    public function addRoute(Route $route)
     {
-        if (\in_array($uri, $this->uri, true)) {
-            throw DuplicateRouteException::duplicateUri($uri);
+        if (\in_array($route->getUri(), $this->uri, true)) {
+            throw DuplicateRouteException::duplicateUri($route->getUri());
         }
 
-        if (array_key_exists($name, $this->routes)) {
-            throw DuplicateRouteException::duplicateUriName($name);
+        if (array_key_exists($route->getName(), $this->routes)) {
+            throw DuplicateRouteException::duplicateUriName($route->getName());
         }
 
-        $this->uri[] = $uri;
-        $this->routes[$name] = new Route($uri, $name, $callable);
-    }
+        $this->uri[] = $route->getUri();
+        $this->routes[$route->getName()] = $route;
 
-    public function getRoutes(): array
-    {
-        return $this->routes;
+        return $route;
     }
 
     /**
@@ -52,8 +48,7 @@ class RouterContainer
     public function match(ServerRequestInterface $request, Route $route): bool
     {
         $uri = $request->getUri()->getPath();
-
-        $path = preg_replace("#{([\w]+)}#", '([^/]+)', $route->getUri());
+        $path = $this->generatePath($route);
 
         if (!preg_match("#^$path$#i", $uri, $matches)) {
             return false;
@@ -63,5 +58,24 @@ class RouterContainer
         $route->setParameters($matches);
 
         return true;
+    }
+
+    public function getRoutes(): array
+    {
+        return $this->routes;
+    }
+
+    private function generatePath($route)
+    {
+        $path = $route->getUri();
+
+        if (!empty($route->getWhere())) {
+            foreach ($route->getWhere() as $attribute => $where) {
+                $path = preg_replace("#{(" . $attribute . ")}#", '('.$where.')', $path);
+            }
+        }
+        $path = preg_replace("#{([\w]+)}#", '([^/]+)', $path);
+
+        return $path;
     }
 }
