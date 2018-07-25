@@ -26,13 +26,12 @@ class Router
      *
      * @param $uri
      * @param $name
-     * @param $callable
-     *
+     * @param $action
      * @return Route
      */
-    public function get($uri, $name, $callable)
+    public function get($uri, $name, $action): Route
     {
-        return $this->routes->addRoute($this->createRoute($uri, $name, $callable));
+        return $this->routes->addRoute($this->createRoute($uri, $name, $action));
     }
 
     /**
@@ -40,12 +39,22 @@ class Router
      *
      * @param $uri
      * @param $name
-     * @param $callable
+     * @param $action
      * @return Route
      */
-    private function createRoute($uri, $name, $callable): Route
+    private function createRoute($uri, $name, $action): Route
     {
-        return new Route($uri, $name, $callable);
+        if (\is_string($action)) {
+            $action = $this->convertToControllerAction($action);
+        }
+
+        return new Route($uri, $name, $action);
+    }
+
+    private function convertToControllerAction($action): string
+    {
+        $action = 'App\\Controller\\'.$action;
+        return $action;
     }
 
     /**

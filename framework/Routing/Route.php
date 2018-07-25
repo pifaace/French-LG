@@ -15,7 +15,7 @@ class Route
     /**
      * @var callable|string
      */
-    private $callable;
+    private $action;
 
     /**
      * @var string
@@ -32,10 +32,10 @@ class Route
      */
     private $wheres = [];
 
-    public function __construct($uri, $name, $callable)
+    public function __construct($uri, $name, $action)
     {
         $this->name = $name;
-        $this->callable = $callable;
+        $this->action = $action;
         $this->uri = $uri;
     }
 
@@ -56,11 +56,11 @@ class Route
     }
 
     /**
-     * @return callable
+     * @return callable|string
      */
-    public function getCallable(): callable
+    public function getAction()
     {
-        return $this->callable;
+        return $this->action;
     }
 
     /**
@@ -86,7 +86,7 @@ class Route
         return $this;
     }
 
-    public function getWhere()
+    public function getWhere(): array
     {
         return $this->wheres;
     }
