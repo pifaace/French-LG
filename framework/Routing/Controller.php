@@ -20,7 +20,7 @@ class Controller
         $method = end($exploded);
 
         $controller = new $controllerName();
-        $response = call_user_func_array([$controller, $method], []);
+        $response = call_user_func_array([$controller, $method], $route->getParameters());
 
         if (!$response instanceof Response) {
             throw new HttpResponseException(sprintf(

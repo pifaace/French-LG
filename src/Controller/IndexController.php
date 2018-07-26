@@ -11,4 +11,9 @@ class IndexController extends Controller
     {
         return new Response(200, [], 'Hello from index');
     }
+
+    public function user($id, $foo)
+    {
+        return new Response(200, [], 'User '.$id . $foo);
+    }
 }
