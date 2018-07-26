@@ -19,6 +19,7 @@ class RouterContainer
 
     /**
      * @param Route $route
+     *
      * @return Route
      */
     public function addRoute(Route $route)
@@ -71,7 +72,7 @@ class RouterContainer
 
         if (!empty($route->getWhere())) {
             foreach ($route->getWhere() as $attribute => $where) {
-                $path = preg_replace("#{(" . $attribute . ")}#", '('.$where.')', $path);
+                $path = preg_replace('#{('.$attribute.')}#', '('.$where.')', $path);
             }
         }
         $path = preg_replace("#{([\w]+)}#", '([^/]+)', $path);

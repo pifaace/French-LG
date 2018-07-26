@@ -10,7 +10,7 @@ class CallController
         $controllerName = array_shift($exploded);
         $method = end($exploded);
 
-        $controller = new $controllerName;
+        $controller = new $controllerName();
 
         return call_user_func_array([$controller, $method], []);
     }

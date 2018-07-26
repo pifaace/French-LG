@@ -2,7 +2,9 @@
 
 namespace Tests\framework\Routing;
 
+use Framework\Routing\CallController;
 use Framework\Routing\Router;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +33,7 @@ class RouterTest extends TestCase
         $route = $this->router->match($request);
 
         $this->assertEquals('foo', $route->getName());
-        $this->assertEquals('hello from foo', \call_user_func_array($route->getCallable(), []));
+        $this->assertEquals('hello from foo', \call_user_func_array($route->getAction(), []));
     }
 
     public function testGetWithParameters()
@@ -42,7 +44,7 @@ class RouterTest extends TestCase
         $route = $this->router->match($request);
 
         $this->assertEquals('profile', $route->getName());
-        $this->assertEquals('profile 3', \call_user_func_array($route->getCallable(), $route->getParameters()));
+        $this->assertEquals('profile 3', \call_user_func_array($route->getAction(), $route->getParameters()));
     }
 
     public function testInvalidRoute()
@@ -81,13 +83,13 @@ class RouterTest extends TestCase
         $validRoute = $this->router->match($validRequest);
         $invalidRoute = $this->router->match($invalidRequest);
 
-        $this->assertEquals('profile 34', \call_user_func_array($validRoute->getCallable(), $validRoute->getParameters()));
+        $this->assertEquals('profile 34', \call_user_func_array($validRoute->getAction(), $validRoute->getParameters()));
         $this->assertEquals(null, $invalidRoute);
     }
 
     public function testGetWithParametersAndWheres()
     {
-        $this->router->get('/profile/{id}/{foo}', 'profile', function ($id, $foo) {return 'profile '.$id . $foo; })->where(['id' => '[0-9]+', 'foo' => '[a-zA-Z]+']);
+        $this->router->get('/profile/{id}/{foo}', 'profile', function ($id, $foo) {return 'profile '.$id.$foo; })->where(['id' => '[0-9]+', 'foo' => '[a-zA-Z]+']);
 
         $validRequest = new ServerRequest('GET', '/profile/34/Az');
         $invalidRequest = new ServerRequest('GET', '/profile/2f/4');
@@ -95,7 +97,16 @@ class RouterTest extends TestCase
         $validRoute = $this->router->match($validRequest);
         $invalidRoute = $this->router->match($invalidRequest);
 
-        $this->assertEquals('profile 34Az', \call_user_func_array($validRoute->getCallable(), $validRoute->getParameters()));
+        $this->assertEquals('profile 34Az', \call_user_func_array($validRoute->getAction(), $validRoute->getParameters()));
         $this->assertEquals(null, $invalidRoute);
+    }
+
+    public function testGetAndCallAController()
+    {
+        $route = $this->router->get('/', 'index', 'IndexController@index');
+        $callController = new CallController();
+
+        $this->assertEquals('App\\Controller\\IndexController@index', $route->getAction());
+        $this->assertInstanceOf(Response::class, $callController($route));
     }
 }

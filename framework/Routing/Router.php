@@ -27,6 +27,7 @@ class Router
      * @param $uri
      * @param $name
      * @param $action
+     *
      * @return Route
      */
     public function get($uri, $name, $action): Route
@@ -35,11 +36,12 @@ class Router
     }
 
     /**
-     * Create a new route
+     * Create a new route.
      *
      * @param $uri
      * @param $name
      * @param $action
+     *
      * @return Route
      */
     private function createRoute($uri, $name, $action): Route
@@ -54,6 +56,7 @@ class Router
     private function convertToControllerAction($action): string
     {
         $action = 'App\\Controller\\'.$action;
+
         return $action;
     }
 
