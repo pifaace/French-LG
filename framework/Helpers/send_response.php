@@ -16,11 +16,13 @@ function send(ResponseInterface $response)
         $response->getStatusCode(),
         $response->getReasonPhrase());
 
-    header($heading, true, 200);
+    if (!headers_sent()) {
+        header($heading, true, 200);
 
-    foreach ($response->getHeaders() as $key => $header) {
-        foreach ($header as $value) {
-            header($key.':'.$value);
+        foreach ($response->getHeaders() as $key => $header) {
+            foreach ($header as $value) {
+                header($key.':'.$value);
+            }
         }
     }
 
