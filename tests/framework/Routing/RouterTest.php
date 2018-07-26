@@ -2,7 +2,7 @@
 
 namespace Tests\framework\Routing;
 
-use Framework\Routing\CallController;
+use Framework\Routing\Controller;
 use Framework\Routing\Router;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -104,7 +104,7 @@ class RouterTest extends TestCase
     public function testGetAndCallAController()
     {
         $route = $this->router->get('/', 'index', 'IndexController@index');
-        $callController = new CallController();
+        $callController = new Controller();
 
         $this->assertEquals('App\\Controller\\IndexController@index', $route->getAction());
         $this->assertInstanceOf(Response::class, $callController($route));

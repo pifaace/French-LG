@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
+use Framework\Routing\Controller;
 use GuzzleHttp\Psr7\Response;
 
-class IndexController
+class IndexController extends Controller
 {
     public function index()
     {
