@@ -8,11 +8,22 @@ use Psr\Http\Message\ServerRequestInterface;
 class RouterContainer
 {
     /**
-     * @var Route[]
+     * All routes sort by method
+     *
+     * @var array
      */
     private $routes = [];
 
     /**
+     * An array of all routes
+     *
+     * @var Route[]
+     */
+    private $allRoutes = [];
+
+    /**
+     * index all routes which hav been registered to not have duplication
+     *
      * @var array
      */
     private $uri = [];
@@ -22,18 +33,23 @@ class RouterContainer
      *
      * @return Route
      */
-    public function addRoute(Route $route)
+    public function addRoute(Route $route): Route
     {
         if (\in_array($route->getUri(), $this->uri, true)) {
             throw DuplicateRouteException::duplicateUri($route->getUri());
         }
 
-        if (array_key_exists($route->getName(), $this->routes)) {
+        if (array_key_exists($route->getName(), $this->uri)) {
             throw DuplicateRouteException::duplicateUriName($route->getName());
         }
 
-        $this->uri[] = $route->getUri();
-        $this->routes[$route->getName()] = $route;
+        $this->uri[$route->getName()] = $route->getUri();
+
+        foreach ($route->getMethods() as $method) {
+            $this->routes[$method][$route->getName()] = $route;
+        }
+
+        $this->allRoutes[] = $route;
 
         return $route;
     }
@@ -61,9 +77,34 @@ class RouterContainer
         return true;
     }
 
-    public function getRoutes(): array
+    /**
+     *
+     * @param $method
+     * @return Route[]
+     */
+    public function getRoutesForSpecificMethod($method): array
+    {
+        if (array_key_exists($method, $this->routes)) {
+            return $this->routes[$method];
+        }
+
+        return [];
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoutesByMethod(): array
     {
         return $this->routes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllRoutes(): array
+    {
+        return $this->allRoutes;
     }
 
     private function generatePath($route)
@@ -72,7 +113,7 @@ class RouterContainer
 
         if (!empty($route->getWhere())) {
             foreach ($route->getWhere() as $attribute => $where) {
-                $path = preg_replace('#{('.$attribute.')}#', '('.$where.')', $path);
+                $path = preg_replace('#{(' . $attribute . ')}#', '(' . $where . ')', $path);
             }
         }
         $path = preg_replace("#{([\w]+)}#", '([^/]+)', $path);

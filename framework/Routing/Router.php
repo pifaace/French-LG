@@ -32,25 +32,26 @@ class Router
      */
     public function get($uri, $name, $action): Route
     {
-        return $this->routes->addRoute($this->createRoute($uri, $name, $action));
+        return $this->routes->addRoute($this->createRoute(['GET'], $uri, $name, $action));
     }
 
     /**
      * Create a new route.
      *
+     * @param $method
      * @param $uri
      * @param $name
      * @param $action
      *
      * @return Route
      */
-    private function createRoute($uri, $name, $action): Route
+    private function createRoute($method, $uri, $name, $action): Route
     {
         if (\is_string($action)) {
             $action = $this->convertToControllerAction($action);
         }
 
-        return new Route($uri, $name, $action);
+        return new Route($method, $uri, $name, $action);
     }
 
     private function convertToControllerAction($action): string
@@ -65,14 +66,17 @@ class Router
      *
      * @return Route[]
      */
-    public function getRoutes(): array
+    public function getAllRoutes(): array
     {
-        return $this->routes->getRoutes();
+        return $this->routes->getAllRoutes();
     }
 
     public function match(ServerRequestInterface $request): ?Route
     {
-        foreach ($this->routes->getRoutes() as $route) {
+        // At first we need ton determine which type of method is called
+        $method = $request->getMethod();
+
+        foreach ($this->routes->getRoutesForSpecificMethod($method) as $route) {
             if ($this->routes->match($request, $route)) {
                 return $route;
             }

@@ -22,7 +22,7 @@ class RouterTest extends TestCase
         $this->router->get('/foo', 'foo', function () {return 'hello from foo'; });
         $this->router->get('/blo', 'blo', function () {return 'blo'; });
 
-        $this->assertCount(2, $this->router->getRoutes());
+        $this->assertCount(2, $this->router->getAllRoutes());
     }
 
     public function testGetMethodWithNoParameter()
@@ -50,9 +50,9 @@ class RouterTest extends TestCase
     public function testInvalidRoute()
     {
         $request = new ServerRequest('GET', '/ferfeffe');
-        $response = $this->router->match($request);
+        $route = $this->router->match($request);
 
-        $this->assertEquals(null, $response);
+        $this->assertEquals(null, $route);
     }
 
     /**
@@ -104,9 +104,9 @@ class RouterTest extends TestCase
     public function testGetAndCallAController()
     {
         $route = $this->router->get('/', 'index', 'IndexController@index');
-        $callController = new Controller();
+        $controller = new Controller();
 
         $this->assertEquals('App\\Controller\\IndexController@index', $route->getAction());
-        $this->assertInstanceOf(Response::class, $callController($route));
+        $this->assertInstanceOf(Response::class, $controller->callAction($route));
     }
 }

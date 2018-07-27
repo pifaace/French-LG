@@ -8,6 +8,11 @@ namespace Framework\Routing;
 class Route
 {
     /**
+     * @var array
+     */
+    private $methods;
+
+    /**
      * @var string
      */
     private $name;
@@ -32,11 +37,12 @@ class Route
      */
     private $wheres = [];
 
-    public function __construct($uri, $name, $action)
+    public function __construct($method, $uri, $name, $action)
     {
         $this->name = $name;
         $this->action = $action;
         $this->uri = $uri;
+        $this->methods = $method;
     }
 
     /**
@@ -89,5 +95,21 @@ class Route
     public function getWhere(): array
     {
         return $this->wheres;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMethods(): array
+    {
+        return $this->methods;
+    }
+
+    /**
+     * @param array $methods
+     */
+    public function setMethods(array $methods): void
+    {
+        $this->methods = $methods;
     }
 }

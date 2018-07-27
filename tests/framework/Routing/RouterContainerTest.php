@@ -21,7 +21,7 @@ class RouterContainerTest extends TestCase
 
     public function testMatch()
     {
-        $route = new Route('/user/{id}', 'user', function () {});
+        $route = new Route('GET', '/user/{id}', 'user', function () {});
         $request = new ServerRequest('GET', '/user/3');
         $match = $this->routerContainer->match($request, $route);
 
@@ -30,7 +30,7 @@ class RouterContainerTest extends TestCase
 
     public function testMatchWithCustomRegex()
     {
-        $route = new Route('/user/{id}', 'user', function () {});
+        $route = new Route('GET', '/user/{id}', 'user', function () {});
         $route->where(['id' => '[a-z]+']);
         $invalidRequest = new ServerRequest('GET', '/user/3');
         $validRequest = new ServerRequest('GET', '/user/zd');
